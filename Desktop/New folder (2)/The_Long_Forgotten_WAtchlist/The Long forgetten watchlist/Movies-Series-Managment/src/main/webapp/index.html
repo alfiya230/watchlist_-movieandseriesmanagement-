@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Long Forgotten Watchlist | Home</title>
+
+    <style>
+        :root {
+            --movie-bg: #f4f6fb;
+            --movie-card: #ffffff;
+            --movie-text: #172033;
+            --movie-muted: #697386;
+            --movie-accent: #7657e8;
+            --movie-border: #e2e6ef;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--movie-bg);
+            color: var(--movie-text);
+        }
+
+        /* Header */
+        .site-header {
+            background: #111827;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .site-nav {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .site-nav a:hover,
+        .site-nav a.active {
+            color: #a99aff;
+        }
+
+        /* Welcome banner */
+        .home-hero {
+            background: linear-gradient(120deg, #17152e, #43328b, #7657e8);
+            color: white;
+            padding: 75px 7%;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .hero-label {
+            display: inline-block;
+            padding: 7px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .home-hero h1 {
+            font-size: clamp(34px, 5vw, 50px);
+            line-height: 1.15;
+            margin: 0 0 18px;
+        }
+
+        .home-hero p {
+            color: #e5e1ff;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 650px;
+            margin: 0 0 28px;
+        }
+
+        /* Buttons */
+        .button {
+            display: inline-block;
+            padding: 12px 19px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            opacity: 0.92;
+        }
+
+        .button-light {
+            background: white;
+            color: #43328b;
+        }
+
+        .button-hero-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-left: 8px;
+        }
+
+        .button-primary {
+            background: var(--movie-accent);
+            color: white;
+        }
+
+        .button-outline {
+            background: transparent;
+            color: var(--movie-accent);
+            border: 1px solid var(--movie-border);
+        }
+
+        /* Main content */
+        .page-container {
+            max-width: 1100px;
+            margin: 42px auto;
+            padding: 0 24px;
+        }
+
+        .section-heading {
+            margin-bottom: 24px;
+        }
+
+        .section-heading h2 {
+            font-size: 26px;
+            margin: 0 0 10px;
+        }
+
+        .section-heading p {
+            color: var(--movie-muted);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Navigation cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .feature-card {
+            background: var(--movie-card);
+            border: 1px solid var(--movie-border);
+            border-radius: 13px;
+            padding: 28px;
+            box-shadow: 0 4px 14px rgba(23, 32, 51, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(23, 32, 51, 0.08);
+        }
+
+        .feature-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0ecff;
+            border-radius: 12px;
+            font-size: 27px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin: 0 0 12px;
+        }
+
+        .feature-card p {
+            color: var(--movie-muted);
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 0 0 23px;
+            flex-grow: 1;
+        }
+
+        /* Footer */
+        .site-footer {
+            text-align: center;
+            padding: 25px 20px;
+            color: var(--movie-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--movie-border);
+            margin-top: 50px;
+        }
+
+        @media (max-width: 800px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .site-header {
+                padding: 18px 5%;
+            }
+
+            .home-hero {
+                padding: 55px 5%;
+            }
+
+            .feature-card {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .page-container {
+                padding: 0 16px;
+            }
+
+            .site-nav {
+                gap: 14px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .button-hero-outline {
+                margin: 12px 0 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="brand">🎬 The Long Forgotten Watchlist</div>
+
+        <nav class="site-nav">
+            <a href="index.html" class="active">Home</a>
+            <a href="movies.html">Movies</a>
+            <a href="series.html">Series</a>
+            <a href="watchlist.html">My Watchlist</a>
+        </nav>
+    </header>
+
+    <section class="home-hero">
+        <div class="hero-content">
+            <span class="hero-label">Your personal entertainment space</span>
+
+            <h1>Every story deserves<br>a place on your list.</h1>
+
+            <p>
+                Welcome to The Long Forgotten Watchlist — your personal space
+                to organise movies, keep track of series, and remember all the
+                stories you want to experience.
+            </p>
+
+            <a href="movies.html" class="button button-light">
+                Explore Movies
+            </a>
+
+            <a href="watchlist.html" class="button button-hero-outline">
+                View My Watchlist
+            </a>
+        </div>
+    </section>
+
+    <main class="page-container">
+
+        <section class="section-heading">
+            <h2>Explore Your Collection</h2>
+            <p>
+                Choose a section to manage your entertainment collection.
+            </p>
+        </section>
+
+        <section class="feature-grid">
+
+            <article class="feature-card">
+                <div class="feature-icon">🎥</div>
+
+                <h3>Movies</h3>
+
+                <p>
+                    Organise your favourite films, add movie details,
+                    explore ratings, and manage your movie collection.
+                </p>
+
+                <a href="movies.html" class="button button-primary">
+                    Explore Movies →
+                </a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">📺</div>
+
+                <h3>Series</h3>
+
+                <p>
+                    Keep your favourite series organised and track
+                    important details, including genres and seasons.
+                </p>
+
+                <a href="series.html" class="button button-primary">
+                    Explore Series →
+                </a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">⭐</div>
+
+                <h3>My Watchlist</h3>
+
+                <p>
+                    Save movies and series you want to watch, mark
+                    completed items, and keep everything organised.
+                </p>
+
+                <a href="watchlist.html" class="button button-primary">
+                    Open Watchlist →
+                </a>
+            </article>
+
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        The Long Forgotten Watchlist · Your stories, all in one place.
+    </footer>
+
+</body>
+</html>

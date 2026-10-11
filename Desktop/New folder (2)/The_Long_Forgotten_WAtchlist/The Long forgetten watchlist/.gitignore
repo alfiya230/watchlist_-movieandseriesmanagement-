@@ -1,0 +1,5 @@
+# Ignore local Oracle database credentials
+db.personal
+db.properties
+/build/
+/target/

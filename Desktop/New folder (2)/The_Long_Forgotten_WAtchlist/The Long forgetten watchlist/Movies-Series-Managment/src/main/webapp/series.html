@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111827">
+
+    <title>Series | The Long Forgotten Watchlist</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        :root {
+            --movie-bg: #f4f6fb;
+            --movie-card: #ffffff;
+            --movie-text: #172033;
+            --movie-muted: #697386;
+            --movie-accent: #7657e8;
+            --movie-border: #e2e6ef;
+            --movie-danger: #d83b50;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--movie-bg);
+            color: var(--movie-text);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .site-header {
+            background: #111827;
+            color: #fff;
+            padding: 18px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
+
+        .site-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .site-nav a {
+            padding: 9px 13px;
+            border-radius: 8px;
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .site-nav a:hover,
+        .site-nav a.active {
+            background: #7657e8;
+            color: #fff;
+        }
+
+        .movie-hero {
+            padding: 55px 6%;
+            color: #fff;
+            background: linear-gradient(120deg, #17152e, #43328b, #7657e8);
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .hero-label {
+            color: #ded5ff;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .movie-hero h1 {
+            margin: 12px 0;
+            font-size: clamp(32px, 5vw, 48px);
+        }
+
+        .movie-hero p {
+            max-width: 600px;
+            color: #e7e3ff;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .button {
+            border: none;
+            border-radius: 9px;
+            padding: 12px 17px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform .15s, opacity .15s;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            opacity: .92;
+        }
+
+        .button-primary { background: var(--movie-accent); color: #fff; }
+        .button-light { background: #fff; color: #30235e; }
+        .button-secondary { background: #edf0f7; color: #30384a; }
+        .button-danger { background: #fff0f1; color: var(--movie-danger); }
+        .button-outline { background: transparent; color: #fff; border: 1px solid #ffffff80; }
+
+        .page-container {
+            max-width: 1100px;
+            margin: 30px auto 55px;
+            padding: 0 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--movie-card);
+            padding: 21px;
+            border: 1px solid var(--movie-border);
+            border-radius: 13px;
+        }
+
+        .stat-label { color: var(--movie-muted); font-size: 13px; }
+
+        .stat-value {
+            display: block;
+            margin-top: 10px;
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .panel {
+            background: var(--movie-card);
+            border: 1px solid var(--movie-border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 20px #17203308;
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .panel-heading h2 { margin: 0 0 7px; font-size: 21px; }
+
+        .panel-heading p {
+            margin: 0;
+            color: var(--movie-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-field label { font-size: 13px; font-weight: bold; }
+
+        .form-field input,
+        .toolbar input,
+        .toolbar select {
+            width: 100%;
+            min-width: 0;
+            padding: 12px 13px;
+            border: 1px solid #d9deea;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--movie-text);
+            font: inherit;
+            font-size: 14px;
+        }
+
+        .form-field input:focus,
+        .toolbar input:focus,
+        .toolbar select:focus {
+            outline: 2px solid #7657e855;
+            border-color: var(--movie-accent);
+        }
+
+        .form-field small { color: var(--movie-muted); font-size: 12px; }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: minmax(180px, 1fr) minmax(140px, 190px);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        .movie-card {
+            min-width: 0;
+            padding: 19px;
+            border: 1px solid var(--movie-border);
+            border-radius: 12px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .movie-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .movie-icon {
+            display: grid;
+            place-items: center;
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            background: #eee9ff;
+            font-size: 22px;
+        }
+
+        .rating {
+            padding: 6px 9px;
+            background: #fff4d6;
+            color: #835b00;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .movie-card h3 {
+            margin: 0;
+            overflow-wrap: anywhere;
+            font-size: 18px;
+        }
+
+        .genre-tag {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 6px 9px;
+            background: #f0edff;
+            color: #5940b0;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .movie-details {
+            display: grid;
+            gap: 8px;
+            color: var(--movie-muted);
+            font-size: 13px;
+        }
+
+        .movie-details span {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .movie-details strong { color: #30384a; text-align: right; }
+
+        .movie-card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 7px;
+        }
+
+        .movie-card-actions .button {
+            flex: 1;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 18px;
+            border: 1px dashed #cbd1df;
+            border-radius: 12px;
+            color: var(--movie-muted);
+        }
+
+        .empty-state .empty-icon {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 35px;
+        }
+
+        .empty-state h3 { margin: 0 0 8px; color: var(--movie-text); }
+        .empty-state p { margin: 0; line-height: 1.6; }
+
+        .notice {
+            display: none;
+            padding: 13px 15px;
+            margin-bottom: 20px;
+            border-radius: 9px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notice.visible { display: block; }
+        .notice.success { background: #e8f8ef; color: #17663a; }
+        .notice.error { background: #fff0f1; color: #a12636; }
+        .notice.info { background: #edf2ff; color: #334c9b; }
+
+        .site-footer {
+            background: #111827;
+            color: #aeb6c6;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .site-footer p { margin: 5px 0; }
+
+        @media (max-width: 800px) {
+            .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .site-header { padding: 16px 20px; }
+        }
+
+        @media (max-width: 560px) {
+            .stats-grid, .form-grid, .movie-grid, .toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .panel { padding: 18px; }
+            .movie-hero { padding: 38px 20px; }
+            .page-container { padding: 0 13px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="site-header">
+    <a class="brand" href="index.html">🎬 The Long Forgotten Watchlist</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a class="active" href="series.html">Series</a>
+        <a href="watchlist.html">My Watchlist</a>
+    </nav>
+</header>
+
+<section class="movie-hero">
+    <div class="hero-content">
+        <span class="hero-label">Your personal series library</span>
+        <h1>Every episode. Every season.</h1>
+        <p>
+            Organize the series you love, keep track of their seasons,
+            and find your next binge-worthy story.
+        </p>
+
+        <div class="hero-actions">
+            <button class="button button-light" id="addSeriesShortcut" type="button">
+                + Add a series
+            </button>
+            <button class="button button-outline" id="browseShortcut" type="button">
+                Browse collection
+            </button>
+        </div>
+    </div>
+</section>
+
+<main class="page-container">
+
+    <div id="message" class="notice" role="status" aria-live="polite"></div>
+
+    <section class="stats-grid" aria-label="Series statistics">
+        <div class="stat-card">
+            <span class="stat-label">Series in collection</span>
+            <span class="stat-value" id="totalSeries">0</span>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Average rating</span>
+            <span class="stat-value" id="averageRating">—</span>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Total seasons</span>
+            <span class="stat-value" id="totalSeasons">0</span>
+        </div>
+    </section>
+
+    <section class="panel" id="add-section">
+        <div class="panel-heading">
+            <div>
+                <h2>Add a Series</h2>
+                <p>Enter the details to add a series to your collection.</p>
+            </div>
+        </div>
+
+        <form id="seriesForm">
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="seriesTitle">Series title *</label>
+                    <input id="seriesTitle" type="text" maxlength="150"
+                           placeholder="e.g. Stranger Things" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="seriesGenre">Genre *</label>
+                    <input id="seriesGenre" type="text" maxlength="80"
+                           placeholder="e.g. Sci-Fi, Drama" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="seriesRating">Rating out of 10 *</label>
+                    <input id="seriesRating" type="number" min="0" max="10"
+                           step="0.1" placeholder="e.g. 8.7" required>
+                    <small>Use a rating between 0 and 10.</small>
+                </div>
+
+                <div class="form-field">
+                    <label for="seriesYear">Release year *</label>
+                    <input id="seriesYear" type="number" min="1900"
+                           max="2100" step="1" placeholder="e.g. 2016" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="seriesSeasons">Number of seasons *</label>
+                    <input id="seriesSeasons" type="number" min="1"
+                           max="100" step="1" placeholder="e.g. 4" required>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">
+                    Save Series
+                </button>
+                <button class="button button-secondary" type="reset">
+                    Clear Form
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel" id="collection-section">
+        <div class="panel-heading">
+            <div>
+                <h2>Your Series Collection</h2>
+                <p>Search, sort, and manage the series in this browser.</p>
+            </div>
+
+            <button class="button button-secondary" id="clearCollection" type="button">
+                Clear Collection
+            </button>
+        </div>
+
+        <div class="toolbar">
+            <input id="searchInput" type="search"
+                   placeholder="Search by series title or genre..."
+                   aria-label="Search series">
+
+            <select id="sortSelect" aria-label="Sort series">
+                <option value="newest">Recently added</option>
+                <option value="title">Title: A to Z</option>
+                <option value="rating">Highest rating</option>
+                <option value="year">Newest release year</option>
+                <option value="seasons">Most seasons</option>
+            </select>
+        </div>
+
+        <div id="seriesList" class="movie-grid"></div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <p>© 2026 The Long Forgotten Watchlist</p>
+    <p>Your stories. Your collection. Your next favourite.</p>
+</footer>
+
+<script>
+    // FRONTEND DEMO ONLY: data is saved in this browser, not Oracle.
+
+    const STORAGE_KEY = "longForgottenWatchlistSeries";
+
+    const seriesForm = document.getElementById("seriesForm");
+    const seriesList = document.getElementById("seriesList");
+    const message = document.getElementById("message");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+
+    let seriesCollection = loadSeries();
+
+    function loadSeries() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const parsed = stored ? JSON.parse(stored) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function saveSeries() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(seriesCollection));
+            return true;
+        } catch (error) {
+            showMessage("Unable to save data in this browser.", "error");
+            return false;
+        }
+    }
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "notice visible " + type;
+
+        clearTimeout(showMessage.timer);
+        showMessage.timer = setTimeout(function () {
+            message.classList.remove("visible");
+        }, 4500);
+    }
+
+    function escapeHTML(value) {
+        return String(value).replace(/[&<>"']/g, function (character) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            }[character];
+        });
+    }
+
+    function updateStatistics() {
+        document.getElementById("totalSeries").textContent =
+            seriesCollection.length;
+
+        if (seriesCollection.length === 0) {
+            document.getElementById("averageRating").textContent = "—";
+            document.getElementById("totalSeasons").textContent = "0";
+            return;
+        }
+
+        const average = seriesCollection.reduce(function (total, series) {
+            return total + Number(series.rating);
+        }, 0) / seriesCollection.length;
+
+        const seasons = seriesCollection.reduce(function (total, series) {
+            return total + Number(series.seasons);
+        }, 0);
+
+        document.getElementById("averageRating").textContent =
+            average.toFixed(1) + "/10";
+
+        document.getElementById("totalSeasons").textContent = seasons;
+    }
+
+    function renderSeries() {
+        const query = searchInput.value.trim().toLowerCase();
+        const sortBy = sortSelect.value;
+
+        let filtered = seriesCollection.filter(function (series) {
+            return series.title.toLowerCase().includes(query)
+                || series.genre.toLowerCase().includes(query);
+        });
+
+        if (sortBy === "title") {
+            filtered.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sortBy === "rating") {
+            filtered.sort((a, b) => Number(b.rating) - Number(a.rating));
+        } else if (sortBy === "year") {
+            filtered.sort((a, b) => Number(b.releaseYear) - Number(a.releaseYear));
+        } else if (sortBy === "seasons") {
+            filtered.sort((a, b) => Number(b.seasons) - Number(a.seasons));
+        } else {
+            filtered.sort((a, b) => Number(b.id) - Number(a.id));
+        }
+
+        updateStatistics();
+
+        if (filtered.length === 0) {
+            seriesList.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">📺</span>
+                    <h3>${query ? "No matching series" : "No series yet"}</h3>
+                    <p>${query
+                        ? "Try another title or genre."
+                        : "Use the form above to add your first series."}</p>
+                </div>
+            `;
+            return;
+        }
+
+        seriesList.innerHTML = filtered.map(function (series) {
+            return `
+                <article class="movie-card">
+                    <div class="movie-card-top">
+                        <div class="movie-icon" aria-hidden="true">📺</div>
+                        <span class="rating">
+                            ★ ${Number(series.rating).toFixed(1)}/10
+                        </span>
+                    </div>
+
+                    <h3>${escapeHTML(series.title)}</h3>
+
+                    <span class="genre-tag">${escapeHTML(series.genre)}</span>
+
+                    <div class="movie-details">
+                        <span>
+                            Release year
+                            <strong>${Number(series.releaseYear)}</strong>
+                        </span>
+                        <span>
+                            Seasons
+                            <strong>${Number(series.seasons)}</strong>
+                        </span>
+                    </div>
+
+                    <div class="movie-card-actions">
+                        <button class="button button-danger"
+                                type="button"
+                                data-delete-id="${Number(series.id)}">
+                            Delete
+                        </button>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    }
+
+    seriesForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const title = document.getElementById("seriesTitle").value.trim();
+        const genre = document.getElementById("seriesGenre").value.trim();
+        const rating = Number(document.getElementById("seriesRating").value);
+        const releaseYear = Number(document.getElementById("seriesYear").value);
+        const seasons = Number(document.getElementById("seriesSeasons").value);
+
+        const currentYear = new Date().getFullYear();
+
+        if (!title || !genre) {
+            showMessage("Please enter both a series title and genre.", "error");
+            return;
+        }
+
+        if (!Number.isFinite(rating) || rating < 0 || rating > 10) {
+            showMessage("Rating must be between 0 and 10.", "error");
+            return;
+        }
+
+        if (!Number.isInteger(releaseYear) ||
+            releaseYear < 1900 || releaseYear > currentYear) {
+            showMessage("Enter a valid release year.", "error");
+            return;
+        }
+
+        if (!Number.isInteger(seasons) || seasons < 1 || seasons > 100) {
+            showMessage("Seasons must be a whole number between 1 and 100.", "error");
+            return;
+        }
+
+        const duplicate = seriesCollection.some(function (series) {
+            return series.title.toLowerCase() === title.toLowerCase()
+                && Number(series.releaseYear) === releaseYear;
+        });
+
+        if (duplicate) {
+            showMessage("This series is already in your collection.", "error");
+            return;
+        }
+
+        const nextId = seriesCollection.reduce(function (maxId, series) {
+            return Math.max(maxId, Number(series.id) || 0);
+        }, 0) + 1;
+
+        seriesCollection.push({
+            id: nextId,
+            title: title,
+            genre: genre,
+            rating: rating,
+            releaseYear: releaseYear,
+            seasons: seasons
+        });
+
+        if (!saveSeries()) {
+            seriesCollection.pop();
+            return;
+        }
+
+        seriesForm.reset();
+        renderSeries();
+
+        showMessage(
+            "Series added to your browser collection. It has not been saved to Oracle.",
+            "success"
+        );
+    });
+
+    seriesList.addEventListener("click", function (event) {
+        const deleteButton = event.target.closest("[data-delete-id]");
+
+        if (!deleteButton) return;
+
+        const id = Number(deleteButton.dataset.deleteId);
+        const series = seriesCollection.find(item => Number(item.id) === id);
+
+        if (!series) return;
+
+        if (!confirm('Delete "' + series.title + '" from this browser?')) {
+            return;
+        }
+
+        const previousCollection = seriesCollection;
+        seriesCollection = seriesCollection.filter(item => Number(item.id) !== id);
+
+        if (!saveSeries()) {
+            seriesCollection = previousCollection;
+            return;
+        }
+
+        renderSeries();
+        showMessage("Series removed from your browser collection.", "success");
+    });
+
+    searchInput.addEventListener("input", renderSeries);
+    sortSelect.addEventListener("change", renderSeries);
+
+    document.getElementById("clearCollection").addEventListener("click", function () {
+        if (seriesCollection.length === 0) {
+            showMessage("Your collection is already empty.", "info");
+            return;
+        }
+
+        if (!confirm("Clear all series stored in this browser? This does not change Oracle.")) {
+            return;
+        }
+
+        const previousCollection = seriesCollection;
+        seriesCollection = [];
+
+        if (!saveSeries()) {
+            seriesCollection = previousCollection;
+            return;
+        }
+
+        renderSeries();
+        showMessage("Browser demo collection cleared.", "success");
+    });
+
+    document.getElementById("addSeriesShortcut").addEventListener("click", function () {
+        document.getElementById("add-section").scrollIntoView({ behavior: "smooth" });
+        document.getElementById("seriesTitle").focus({ preventScroll: true });
+    });
+
+    document.getElementById("browseShortcut").addEventListener("click", function () {
+        document.getElementById("collection-section").scrollIntoView({ behavior: "smooth" });
+    });
+
+    renderSeries();
+</script>
+
+</body>
+</html>
